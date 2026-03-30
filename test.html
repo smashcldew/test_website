@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>金湖國小 Jinhu Elementary School</title>
+    <style>
+        :root {
+            --primary-yellow: #FFF9E6;
+            --soft-green: #E8F5E9;
+            --action-orange: #FFAB91;
+            --text-blue: #37474F;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            background-color: var(--primary-yellow);
+            color: var(--text-blue);
+        }
+
+        /* 頂部雙語切換 */
+        .top-bar {
+            background: white;
+            padding: 10px 5%;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .lang-btn {
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 2px solid var(--action-orange);
+            color: var(--action-orange);
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .lang-btn:hover {
+            background: var(--action-orange);
+            color: white;
+        }
+
+        /* 標題與可愛導航 */
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .school-logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .nav-item {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-decoration: none;
+            color: var(--text-blue);
+            transition: transform 0.3s;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-5px);
+            background: var(--soft-green);
+        }
+
+        .nav-item span {
+            display: block;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* 豐富的卡片佈局 */
+        .main-container {
+            width: 90%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            padding-bottom: 50px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+            border-bottom: 8px solid var(--soft-green);
+        }
+
+        h2 {
+            border-left: 8px solid var(--action-orange);
+            padding-left: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* 最新消息列表 */
+        .news-item {
+            padding: 15px 0;
+            border-bottom: 1px dashed #DDD;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .news-tag {
+            background: #E3F2FD;
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+
+        /* 右側可愛圖示按鈕 */
+        .quick-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .icon-box {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .icon-box:hover {
+            border-color: var(--action-orange);
+            background: #FFF8F1;
+        }
+
+        .icon-box i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="lang-btn">繁體中文</div>
+        <div class="lang-btn">English</div>
+    </div>
+
+    <header>
+        <div class="school-logo">🏫</div>
+        <h1>金門縣金湖國小</h1>
+        <p>Jinhu Elementary School, Kinmen</p>
+        
+        <nav>
+            <a href="#" class="nav-item">學校簡介<span>About Us</span></a>
+            <a href="#" class="nav-item">處室專區<span>Departments</span></a>
+            <a href="#" class="nav-item">學生園地<span>Student Hub</span></a>
+            <a href="#" class="nav-item">家長聯絡<span>For Parents</span></a>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <div class="section-card">
+            <h2>📢 最新消息 <small style="font-size: 0.5em; color: gray;">Latest News</small></h2>
+            <div class="news-item">
+                <span><span class="news-tag">榮譽榜</span> 狂賀！本校直笛團榮獲全縣第一名！</span>
+                <small>2026-03-25</small>
+            </div>
+            <div class="news-item">
+                <span><span class="news-tag">活動</span> 5月份比利時國際交流行前說明會</span>
+                <small>2026-03-20</small>
+            </div>
+            <div class="news-item">
+                <span><span class="news-tag">公告</span> 114學年度新生入學注意事項</span>
+                <small>2026-03-15</small>
+            </div>
+        </div>
+
+        <div class="quick-links">
+            <div class="icon-box">
+                🍱 <span>今日午餐<br>School Lunch</span>
+            </div>
+            <div class="icon-box">
+                🗓️ <span>行事曆<br>Calendar</span>
+            </div>
+            <div class="icon-box">
+                🛡️ <span>數位校園<br>Digital Campus</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
