@@ -1,0 +1,69 @@
+/* 卡片容器 */
+.carousel-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+
+    padding: 20px 0;
+}
+
+.project-list {
+    display: flex;          /* 啟用 Flexbox，讓卡片強制水平排列 */
+    flex-wrap: nowrap;     /* 絕不換行，確保所有卡片排成一橫列 */
+    
+    gap: 20px;              /* 卡片與卡片之間的極簡間距 */
+    margin: 0 auto;         /* 居中對齊 */
+}
+
+.project-card {
+    width: 300px;
+    height: 200px;
+    flex: 0 0 300px;
+    position: relative; /* 之後 overlay 會用到 */
+    overflow: hidden;   /* 超出部分隱藏 */
+
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+    transition: 0.3s;
+}
+
+.project-card:hover {
+    transform: scale(1.05);
+}
+
+.project-card:hover .card-image {
+    opacity: 0.8;
+}
+
+/* 圖片 */
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 保持比例填滿 */
+    opacity: 0.9;
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.card-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.card-footer span {
+    color:white;
+}
