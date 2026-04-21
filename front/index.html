@@ -6,36 +6,32 @@
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-    <!--內容-->
-    <nav>
-        <span class="logo">王柏元的個人作品集</span>
-        <ul class="nav-links">
+    <!--導覽列-->
+    <nav class="navbar">
+        <span class="logo"><a href="index.html">王柏元的個人作品集</a></span>
+        <ul class="menu">
             <li><a href="index.html">首頁</a></li>
             <li><a href="project.html">作品集</a></li>
             <li><a href="about.html">關於我</a></li>
         </ul>
+
+        <div class="spacer"></div>
     </nav>
+    <!--標題-->
     <section id="hero">
         <h1>歡迎來到我的作品集</h1>
         <p>這裡展示了我過去的專案和作品，歡迎瀏覽！</p>
-    <!-- 2. 作品卡片預覽容器 -->
-    <div class="carousel-wrapper">
-        <div class="project-list">
-            <!-- 之後 JS 會把作品塞進這裡 -->
-            <div class="project-card">
-                <img src="CSS/website_ph.png" alt="作品圖片" class="card-image">
-                <div class="card-overlay">
-                    <div class="card-footer">
-                        <span class="card-name">個人網站製作</span>
-                        <span class="card-data">2026-03-29</span>
-                    </div>
-                </div>
-            </div>        
+    <!-- 作品輪播區 -->
+            <div id="carousel">
+                <div class="carousel-track"></div>
+                <button id="prev-btn">‹</button>
+                <button id="next-btn">›</button>
+                <div id="carousel-dots"></div>
+            </div>
+        <div class="hero-buttons">
+            <a href="project.html">查看更多作品</a>
         </div>
-    </div>
-    <div class="hero-buttons">
-        <a href="project.html">查看更多作品</a>
-    </div>
     </section>
+<script src="JS/main.js"></script>
 </body>
 </html>

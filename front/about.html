@@ -3,62 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>王柏元的個人作品集-關於我</title>
+    <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
     <!-- 導覽列 -->
-    <nav>
-        <span class="logo">王柏元的個人作品集</span>
-        <ul class="nav-links">
+    <nav class="navbar">
+        <span class="logo"><a href="index.html">王柏元的個人作品集</a></span>
+        <ul class="menu">
             <li><a href="index.html">首頁</a></li>
             <li><a href="project.html">作品集</a></li>
             <li><a href="about.html">關於我</a></li>
         </ul>
+
+        <div class="spacer"></div>
     </nav>
-
-    <!-- 關於我區塊 -->
-    <section id="about-me">
-        <!-- 1. 頭像 -->
-        <div id="about-avatar">
-            <img src="CSS/icon_.jpg" width="100px" height="100px" alt="我的頭像">
+    <!-------------------------------------------------------------------------------------->
+    <section class="about-card">
+        <div class="card-left">
+            <div class="profile-img">
+                <img src="CSS/icon_.jpg" alt="頭像">
+            </div>
+            <h1 class="name">王柏元</h1>
+            <p class="status">目標想往資安與演算法領域發展</p>
+        
+        <div class="contact-box">
+            <span class="label">EMAIL</span>
+            <p class="email">cldew20070210@gmail.com</p>
+            <span class="label">SCHOOL</span>
+            <p class="location">中華大學 資工系一年級</p>
+        </div>
         </div>
 
-        <!-- 2. 個人介紹文字 -->
-        <div id="about-intro">
-            <p>我是王柏元，我來自金門。</p>
-            <p>目前就讀中華大學資工系一年級</p>
-        </div>
+        <div class="card-right">
+            <section class="info-section">
+                <h2>經歷 <span>EXPERIENCE</span></h2>
+                <p></p>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="time"></div>
+                        <div class="event-title"></div>
+                        <p></p>
+                    </div>
+        
+                    <div class="timeline-item">
+                        <div class="time"></div>
+                        <div class="event-title"></div>
+                        <p></p>
+                    </div>
+                </div>
+            </section>
+        
+            <section class="info-section">
+                <h2>擅長 <span>SKILLS</span></h2>
+                <div class="skill-tags">
+                    <span>Python</span>
+                    <span>C/C++</span>
+                </div>
+            </section>
 
-        <!-- 3. 技能列表 -->
-        <div id="about-skills">
-            <h2>技能</h2>
-            <ul>
-                <li>Python 熟練</li>
-                <li>C/C++ 基礎</li>
-            </ul>
-        </div>
-
-        <!-- 4. 證照列表 -->
-        <div id="about-certificates">
-            <h2>證照</h2>
-            <ul>
-                <li>AI-900</li>
-            </ul>
-        </div>
-
-        <!-- 5. 經歷 -->
-        <div id="about-experience">
-            <h2>經歷</h2>
-            <ul>
-                <li>經歷 1</li>
-                <li>經歷 2</li>
-            </ul>
-        </div>
-
-        <!-- 6. 聯絡方式 -->
-        <div id="about-contact">
-            <h2>聯絡方式</h2>
-            <p>手機：0977242488</p>
-            <p>Email：cldew20070210@email.com</p>
+            <section class="info-section">
+                <h2>證照 <span>CERTIFICATIONS</span></h2>
+                <p>AI-900</p>
+            </section>
         </div>
     </section>
 </body>

@@ -3,21 +3,30 @@
     <head>
         <meta charset="UTF-8">
         <title>王柏元的個人作品集-作品集</title>
+        <link rel="stylesheet" href="CSS/style.css">
     </head>
     <body>
-        <nav>
-            <span class="logo">王柏元的個人作品集</span>
-            <ul class="nav-links">
-                <li><a href="index.html">首頁</a></li>
-                <li><a href="project.html">作品集</a></li>
-                <li><a href="about.html">關於我</a></li>
-            </ul>
+        <!--導覽列-->
+        <nav class="navbar">
+        <span class="logo"><a href="index.html">王柏元的個人作品集</a></span>
+        <ul class="menu">
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="project.html">作品集</a></li>
+            <li><a href="about.html">關於我</a></li>
+        </ul>
+        <div class="spacer"></div>
         </nav>
-        <section id="projects-detail">
-            <h1>作品標題</h1>
-            <img src="作品圖片URL" alt="作品圖片">
-            <p>作品描述文字，介紹這個作品的內容、技術細節、開發過程等。</p>
-            <p>完成日期：YYYY-MM-DD</p>
-        </section>
+        <!--內容-->
+        <div id="layout">
+
+            <!-- 左側列表 -->
+            <aside id="sidebar">
+                <ul id="project-nav"></ul>
+            </aside>
+
+            <!-- 右側內容 -->
+            <main id="project-content"></main>
+
+</div>
     </body>
 </html>
