@@ -1,7 +1,7 @@
 const track = document.querySelector(".carousel-track");
 
 if (track) {
-    fetch("http://127.0.0.1:8000/api/projects")
+    fetch("https://test-website-f5nx.onrender.com/")
         .then(res => res.json())
         .then(projects => {
             
