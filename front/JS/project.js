@@ -4,12 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const contentArea = document.getElementById('project-content');
 
     // 註解：向上一層的 back/data.json 請求資料
-    fetch('../back/data.json')
+    fetch('https://test-website-f5nx.onrender.com/api/projects')
         .then(response => {
             if (!response.ok) throw new Error('資料讀取失敗');
             return response.json(); 
         })
         .then(data => {
+            console.log("從雲端 API 收到的真實資料:", data);
+
+            if (!Array.isArray(data)) {
+                console.error("嚴重錯誤:API 回傳的不是陣列，無法顯示作品列");
+                return; 
+            }
+            
             data.forEach((item, index) => {
                 // 註解：建立錨點 ID，這是讓浮動島能精準跳轉的關鍵
                 const sectionId = `project-sec-${index}`;
