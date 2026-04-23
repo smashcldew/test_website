@@ -1,9 +1,15 @@
 const track = document.querySelector(".carousel-track");
 
 if (track) {
-    fetch("https://test-website-f5nx.onrender.com/")
+    fetch("https://test-website-f5nx.onrender.com/api/projects")
         .then(res => res.json())
         .then(projects => {
+            console.log("從雲端 API 收到的真實資料:", projects);
+
+            if (!Array.isArray(projects)) {
+                console.error("嚴重錯誤：API 回傳的不是陣列，無法執行輪播圖！");
+                return; 
+            }
             
             projects.forEach(project => {
                 const slide = document.createElement("div");
