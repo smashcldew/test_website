@@ -7,7 +7,7 @@ if (track) {
             console.log("從雲端 API 收到的真實資料:", projects);
 
             if (!Array.isArray(projects)) {
-                console.error("嚴重錯誤：API 回傳的不是陣列，無法執行輪播圖！");
+                console.error("嚴重錯誤:API 回傳的不是陣列，無法執行輪播圖！");
                 return; 
             }
             

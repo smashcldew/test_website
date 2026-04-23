@@ -5,6 +5,8 @@ from pydantic import BaseModel
 import json
 import os
 import shutil
+import base64
+import requests
 
 app = FastAPI(
     title="個人作品集 API",
@@ -63,29 +65,41 @@ def login(request: LoginRequest):
         # 註解：若錯誤，回傳 401 Unauthorized 狀態碼
         raise HTTPException(status_code=401, detail="帳號或密碼錯誤")
 
+IMGBB_API_KEY = "42bb24d3a8a0a9a33eb55ea6f030d459"
+
 @app.post("/api/upload", tags=["Upload"], dependencies=[Depends(verify_token)])
 def upload_image(file: UploadFile = File(...)):
     try:
-        # 核心修復：強制將路徑中的反斜線轉為正斜線，並透過 os.path.basename 只擷取「檔案名稱」
-        # 這能把 "C:\Users\...\image.png" 或 "C:\fakepath\image.png" 乾淨地變成 "image.png"
-        safe_filename = os.path.basename(file.filename.replace("\\", "/"))
+        # 步驟 1：將圖片讀取並轉為 Base64 編碼，符合 ImgBB API 的傳輸規範
+        image_bytes = file.file.read()
+        image_b64 = base64.b64encode(image_bytes).decode('utf-8')
         
-        # 組合正確的存檔路徑
-        file_path = os.path.join(UPLOAD_DIR, safe_filename)
+        # 步驟 2：向 ImgBB 發送 HTTP POST 請求
+        response = requests.post(
+            "https://api.imgbb.com/1/upload",
+            data={
+                "key": IMGBB_API_KEY,
+                "image": image_b64
+            }
+        )
         
-        print(f"--- 檔案上傳偵錯 ---")
-        print(f"安全過濾後的檔名: {safe_filename}")
-        print(f"實際寫入路徑: {os.path.abspath(file_path)}")
-        
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        # 步驟 3：解析回傳結果
+        if response.status_code == 200:
+            result = response.json()
+            cloud_url = result["data"]["url"] # 取得 ImgBB 生成的永久雲端網址
             
-        # 回傳乾淨的相對路徑給前端
-        return {"status": "success", "image_url": f"uploads/{safe_filename}"}
+            print(f"--- 圖片上傳微服務成功 ---")
+            print(f"雲端網址: {cloud_url}")
+            
+            # 將完整的 https 網址回傳給前端
+            return {"status": "success", "image_url": cloud_url}
+        else:
+            print(f"ImgBB 拒絕請求: {response.text}")
+            raise HTTPException(status_code=500, detail="圖片上傳至雲端圖床失敗")
+            
     except Exception as e:
         print(f"上傳發生錯誤: {str(e)}")
         raise HTTPException(status_code=500, detail=f"上傳失敗: {str(e)}")
-# ↑↑↑ ➕ 任務 5-4 修正區塊結束 ➕ ↑↑↑
 
 #取得內容
 @app.get("/api/projects", tags=["Projects"])
