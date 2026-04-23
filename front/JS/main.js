@@ -1,7 +1,7 @@
 const track = document.querySelector(".carousel-track");
 
 if (track) {
-    fetch("../back/data.json")
+    fetch("http://127.0.0.1:8000/api/projects")
         .then(res => res.json())
         .then(projects => {
             

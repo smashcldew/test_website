@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>作品集後台管理系統</title>
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body style="background-color: #111; color: #fff; font-family: sans-serif; padding: 40px;">
+
+    <div id="login-section" style="max-width: 400px; margin: 0 auto; border: 1px solid #333; padding: 40px; border-radius: 8px; text-align: center;">
+        <h2 style="margin-bottom: 30px;">管理員登入</h2>
+        <input type="text" id="username" placeholder="帳號" style="display: block; margin: 15px auto; padding: 10px; width: 90%; background: #222; border: 1px solid #444; color: #fff;">
+        <input type="password" id="password" placeholder="密碼" style="display: block; margin: 15px auto; padding: 10px; width: 90%; background: #222; border: 1px solid #444; color: #fff;">
+        <button onclick="handleLogin()" style="padding: 10px 20px; background: #fff; color: #000; font-weight: bold; width: 95%; cursor: pointer;">登入</button>
+        <p id="login-msg" style="color: #ff6b6b; margin-top: 15px;"></p>
+    </div>
+
+    <div id="dashboard-section" style="display: none; max-width: 800px; margin: 0 auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 30px;">
+            <h2>管理控制台</h2>
+            <button onclick="logout()" style="padding: 8px 16px; background: #ff4757; color: #fff; border: none; cursor: pointer; border-radius: 4px;">登出</button>
+        </div>
+
+        <div style="background: #1a1a1a; padding: 20px; border-radius: 8px; margin-bottom: 40px;">
+            <h3 style="margin-bottom: 15px;">新增作品</h3>
+            <input type="text" id="new-title" placeholder="作品標題" style="width: 100%; margin-bottom: 10px; padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
+            
+            <input type="file" id="new-image-file" accept="image/*" style="width: 100%; margin-bottom: 10px; padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
+            
+            <input type="text" id="new-date" placeholder="開發日期 (例如: 2026-04-22)" style="width: 100%; margin-bottom: 10px; padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
+            <textarea id="new-content" placeholder="作品內容介紹..." style="width: 100%; margin-bottom: 10px; padding: 8px; background: #222; color: #fff; border: 1px solid #444; height: 100px;"></textarea>
+            <button onclick="addProject()" style="padding: 10px 20px; background: #2ed573; color: #000; border: none; cursor: pointer; font-weight: bold; border-radius: 4px;">確認新增</button>
+        </div>
+
+        <h3 style="margin-bottom: 15px;">現有作品管理</h3>
+        <ul id="admin-project-list" style="list-style: none; padding: 0;"></ul>
+    </div>
+
+    <script>
+        // --- 1. 狀態初始化 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('admin_token')) {
+                showDashboard();
+            }
+        });
+
+        // --- 2. 登入邏輯 ---
+        async function handleLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    localStorage.setItem('admin_token', data.token);
+                    showDashboard();
+                } else {
+                    document.getElementById('login-msg').innerText = data.detail || '登入失敗';
+                }
+            } catch (error) {
+                document.getElementById('login-msg').innerText = '伺服器連線錯誤';
+            }
+        }
+
+        // --- 3. 登出與畫面切換 ---
+        function logout() {
+            localStorage.removeItem('admin_token');
+            location.reload();
+        }
+
+        function showDashboard() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+            fetchAdminProjects(); 
+        }
+
+        // --- 4. 讀取現有作品 ---
+        async function fetchAdminProjects() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/projects');
+                const data = await response.json();
+                const list = document.getElementById('admin-project-list');
+                list.innerHTML = '';
+                data.forEach((item, index) => {
+                    list.innerHTML += `
+                        <li style="background: #222; margin-bottom: 10px; padding: 15px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                            <span>${index} - <strong>${item.title}</strong> (${item.date || '無日期'})</span>
+                            <button onclick="deleteProject(${index})" style="background: #ff4757; color: #fff; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">刪除</button>
+                        </li>
+                    `;
+                });
+            } catch (error) {
+                console.error('讀取失敗', error);
+            }
+        }
+
+        // --- 5. 新增作品 (包含兩階段上傳邏輯) ---
+        async function addProject() {
+            const token = localStorage.getItem('admin_token');
+            const fileInput = document.getElementById('new-image-file');
+            let finalImageUrl = "CSS/temp.png"; // 預設防呆路徑
+
+            // [階段 1：處理實體檔案上傳]
+            if (fileInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append("file", fileInput.files[0]);
+
+                try {
+                    const uploadRes = await fetch('http://127.0.0.1:8000/api/upload', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` }, // 嚴禁在此手動設定 Content-Type
+                        body: formData
+                    });
+                    
+                    if (uploadRes.ok) {
+                        const uploadData = await uploadRes.json();
+                        finalImageUrl = uploadData.image_url; // 成功取得後端洗乾淨的路徑 (例如: uploads/abc.png)
+                    } else {
+                        alert('圖片上傳失敗');
+                        return; // 終止流程
+                    }
+                } catch (error) {
+                    alert('圖片上傳連線錯誤');
+                    return; // 終止流程
+                }
+            }
+
+            // [階段 2：寫入資料庫]
+            const newProj = {
+                title: document.getElementById('new-title').value || "未命名作品",
+                image: finalImageUrl, // 這裡使用的是階段 1 從後端拿到的真實路徑
+                date: document.getElementById('new-date').value,
+                content: document.getElementById('new-content').value || "暫無介紹"
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/projects', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify(newProj)
+                });
+                
+                if (response.ok) {
+                    alert('新增成功！');
+                    // 清空表單並重整列表
+                    document.getElementById('new-title').value = '';
+                    fileInput.value = ''; 
+                    document.getElementById('new-date').value = '';
+                    document.getElementById('new-content').value = '';
+                    fetchAdminProjects(); 
+                } else {
+                    alert('新增失敗，權限不足。');
+                }
+            } catch (error) {
+                alert('寫入資料庫連線錯誤');
+            }
+        }
+
+        // --- 6. 刪除作品 ---
+        async function deleteProject(index) {
+            if (!confirm('確定要刪除這個作品嗎？')) return;
+            const token = localStorage.getItem('admin_token');
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/projects/${index}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    alert('刪除成功！');
+                    fetchAdminProjects();
+                } else {
+                    alert('刪除失敗，權限不足。');
+                }
+            } catch (error) {
+                alert('連線錯誤');
+            }
+        }
+    </script>
+</body>
+</html>

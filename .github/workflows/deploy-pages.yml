@@ -1,0 +1,39 @@
+name: Deploy Frontend to GitHub Pages
+
+# 觸發條件：當程式碼推送到 main 分支時自動執行
+on:
+  push:
+    branches: ["master"] # 如果你的預設分支叫做 master，請改成 ["master"]
+  workflow_dispatch:
+
+# 權限設定
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './front'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

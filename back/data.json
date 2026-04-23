@@ -1,38 +1,14 @@
 [
     {
         "title": "個人作品集網站設計",
-        "image": "CSS/website_ph.png",
-        "content":"這是我第一個作品，以往我寫程式只是為了解題，或著了解某些資料結構、演算法等等，但要我展示作品時，我卻沒辦法拿出東西來證明我會、我做過，所以我決定要建立一個網站來記錄我的作品。",
+        "image": "uploads/website_ph.png",
+        "content": "這是我第一個作品，以往我寫程式只是為了解題，或著了解某些資料結構、演算法等等，但要我展示作品時，我卻沒辦法拿出東西來證明我會、我做過，所以我決定要建立一個網站來記錄我的作品。",
         "date": "2026-03-29"
     },
     {
-        "title":"coming soon",
-        "image":"CSS/temp.png",
-        "content":"此項目即將推出，敬請期待。",
-        "date":""
-    },
-    {
-        "title":"coming soon",
-        "image":"CSS/temp.png",
-        "content":"此項目即將推出，敬請期待。",
-        "date":""
-    },
-    {
-        "title":"coming soon",
-        "image":"CSS/temp.png",
-        "content":"此項目即將推出，敬請期待。",
-        "date":""
-    },
-    {
-        "title": "測試滑動區塊 A",
-        "image": "CSS/temp.png",
-        "content": "這是為測試平滑滾動而新增的佔位內容。網頁必須夠長才會出現捲軸。",
-        "date": "2026-04-21"
-    },
-    {
-        "title": "測試滑動區塊 B",
-        "image": "CSS/temp.png",
-        "content": "請在左側的浮動島點擊這個標題，畫面應該要平滑地滑動到這個位置，而不是瞬間跳轉。",
-        "date": "2026-04-21"
+        "title": "網站後台-管理員系統",
+        "image": "uploads/後臺.png",
+        "content": "裡用python FastAPI建立後台 再用HTTP驗證以達到可以不用碰資料庫就可以做到新增與刪除作品",
+        "date": "2026-04-22"
     }
 ]
