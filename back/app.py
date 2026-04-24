@@ -2,15 +2,14 @@ from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import json
-import os
-import shutil
 import base64
 import requests
+import pymongo
+from bson import ObjectId
 
 app = FastAPI(
     title="個人作品集 API",
-    description="極簡架構的後端 API 系統，支援作品資料的讀取與未來管理員系統的擴充。"
+    description=""
 )
 
 app.add_middleware(
@@ -21,12 +20,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(BASE_DIR, 'data.json')
-
-FRONT_DIR = os.path.join(os.path.dirname(BASE_DIR), 'front')
-UPLOAD_DIR = os.path.join(FRONT_DIR, 'uploads')
-os.makedirs(UPLOAD_DIR, exist_ok=True) # 若資料夾不存在則自動建立
+MONGO_URI = "mongodb://cldew:google123@ac-bv30w7i-shard-00-00.nomm389.mongodb.net:27017,ac-bv30w7i-shard-00-01.nomm389.mongodb.net:27017,ac-bv30w7i-shard-00-02.nomm389.mongodb.net:27017/?ssl=true&replicaSet=atlas-86rjao-shard-0&authSource=admin&appName=Website"
+client = pymongo.MongoClient(MONGO_URI)
+db = client["portfolio_db"] # 資料庫名稱
+collection = db["projects"] # 集合名稱 (類似資料表)
 
 security = HTTPBearer()
 
@@ -105,11 +102,13 @@ def upload_image(file: UploadFile = File(...)):
 @app.get("/api/projects", tags=["Projects"])
 def get_projects():
     try:
-        with open(DATA_FILE, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        return data
+        projects = list(collection.find())
+        # 將 MongoDB 的 ObjectId 轉換為字串，否則 JSON 會報錯
+        for p in projects:
+            p["_id"] = str(p["_id"])
+        return projects
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"讀取資料庫失敗: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"資料庫讀取失敗: {str(e)}")
     
 
 
@@ -117,39 +116,24 @@ def get_projects():
 @app.post("/api/projects", tags=["Projects"], dependencies=[Depends(verify_token)])
 def create_project(project: ProjectData):
     try:
-        # 讀取現有資料庫
-        with open(DATA_FILE, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        # 將前端傳來的資料轉成字典並加入陣列
-        data.append(project.model_dump())
-        
-        # 將更新後的陣列寫回 data.json
-        with open(DATA_FILE, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-            
-        return {"status": "success", "message": "作品新增成功"}
+        # 直接插入雲端資料庫，不再需要讀寫 data.json
+        collection.insert_one(project.model_dump())
+        return {"status": "success", "message": "作品成功存入雲端資料庫"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"寫入資料庫失敗: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"雲端寫入失敗: {str(e)}")
 
 #刪除作品 API (Delete)
 @app.delete("/api/projects/{project_id}", tags=["Projects"], dependencies=[Depends(verify_token)])
 def delete_project(project_id: int):
     try:
-        with open(DATA_FILE, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            
-        # 驗證索引值是否合法，防堵越界錯誤
-        if project_id < 0 or project_id >= len(data):
+        # 由於前端傳來的是索引值 (Index)，我們必須先找出對應的項目
+        projects = list(collection.find())
+        if project_id < 0 or project_id >= len(projects):
             raise HTTPException(status_code=404, detail="找不到該作品")
-            
-        # 移除指定索引的資料
-        deleted_project = data.pop(project_id)
         
-        # 寫回資料庫
-        with open(DATA_FILE, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-            
-        return {"status": "success", "message": f"成功刪除作品: {deleted_project['title']}"}
+        target_id = projects[project_id]["_id"]
+        collection.delete_one({"_id": target_id})
+        
+        return {"status": "success", "message": "已從雲端資料庫刪除"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"更新資料庫失敗: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"刪除失敗: {str(e)}")
