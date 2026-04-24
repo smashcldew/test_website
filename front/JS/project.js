@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h2 style="color: #fff; margin-bottom: 10px; font-size: 26px;">${item.title}</h2>
                     ${dateHTML}
                     <img src="${item.image}" alt="${item.title}" style="width: 100%; max-width: 700px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333; object-fit: cover;">
-                    <p style="color: #aaa; line-height: 1.8; font-size: 16px;">${item.content}</p>
+                    <p style="color: #aaa; line-height: 1.8; font-size: 16px;white-space: pre-wrap;">${item.content}</p>
                 `;
                 contentArea.appendChild(section);
             });
