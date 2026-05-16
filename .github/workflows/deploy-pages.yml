@@ -1,12 +1,10 @@
 name: Deploy Frontend to GitHub Pages
 
-# 觸發條件：當程式碼推送到 main 分支時自動執行
 on:
   push:
-    branches: ["master"] # 如果你的預設分支叫做 master，請改成 ["master"]
+    branches: ["master"]
   workflow_dispatch:
 
-# 權限設定
 permissions:
   contents: read
   pages: write

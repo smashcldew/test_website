@@ -94,30 +94,6 @@ def upload_image(file: UploadFile = File(...)):
         print(f"error upload failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"upload failed: {str(e)}")
 
-# @app.post("/api/upload", tags=["Upload"], dependencies=[Depends(verify_token)])
-# def upload_image(file: UploadFile = File(...)):
-#     try:
-#         # 讀取圖片的二進位資料
-#         image_bytes = file.file.read()
-
-#         # 將二進位資料轉換為 base64 字串
-#         image_b64 = base64.b64encode(image_bytes).decode('utf-8')
-
-#         # 取得檔案類型 (例如: image/jpeg)，若無則預設為 image/jpeg
-#         content_type = file.content_type or "image/jpeg"
-
-#         # 組合成 Data URL 格式
-#         data_url = f"data:{content_type};base64,{image_b64}"
-
-#         print(f"--- image processed to base64 ---")
-
-#         # 直接回傳轉換後的 Data URL 給前端
-#         return {"status": "success", "image_url": data_url}
-
-#     except Exception as e:
-#         print(f"error process failed: {str(e)}")
-#         raise HTTPException(status_code=500, detail=f"image process failed: {str(e)}")
-
 #get
 @app.get("/api/projects", tags=["Projects"])
 def get_projects():
