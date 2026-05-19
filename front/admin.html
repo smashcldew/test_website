@@ -28,7 +28,19 @@
             <input type="file" id="new-image-file" accept="image/*" style="width: 100%; margin-bottom: 10px; padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
             
             <input type="text" id="new-date" placeholder="開發日期 (例如: 2026-04-22)" style="width: 100%; margin-bottom: 10px; padding: 8px; background: #222; color: #fff; border: 1px solid #444;">
-            <textarea id="new-content" placeholder="作品內容介紹..." style="width: 100%; margin-bottom: 10px; padding: 8px; background: #222; color: #fff; border: 1px solid #444; height: 100px;"></textarea>
+            <div style="background: #2a2a2a; border-left: 4px solid #569CD6; padding: 15px; margin-bottom: 15px; font-size: 14px; color: #ccc; border-radius: 4px; font-family: 'Consolas', monospace; line-height: 1.6;">
+                若要新增程式碼區塊請遵照以下方式:<br><br>
+                <span style="color: #CE9178;">&lt;pre&gt;</span><br>
+                <span style="color: #CE9178;">&lt;code class="language-程式語言"&gt;</span><br>
+                <div style="color: #d4d4d4; padding-left: 20px;">程<br>式<br>碼<br>區<br>塊</div>
+                <span style="color: #CE9178;">&lt;/code&gt;</span><br>
+                <span style="color: #CE9178;">&lt;/pre&gt;</span>
+                <div style="margin-top: 15px; color: #ffb86c; font-size: 12px;">
+                    <b>重要提醒：</b>如果是展示 HTML 程式碼，請記得將裡面的 <code>&lt;</code> 換成 <code>&amp;lt;</code>，<code>&gt;</code> 換成 <code>&amp;gt;</code> 喔！
+                </div>
+            </div>
+
+            <textarea id="new-content" placeholder="請輸入作品內容介紹...&#10;&#10;例如：&#10;這是我的後端設計：&#10;<pre><code class=&quot;language-python&quot;>&#10;print('Hello World')&#10;</code></pre>" style="width: 100%; margin-bottom: 15px; padding: 12px; background: #222; color: #fff; border: 1px solid #444; height: 250px; font-family: 'Consolas', monospace; line-height: 1.5;"></textarea>
             <button onclick="addProject()" style="padding: 10px 20px; background: #2ed573; color: #000; border: none; cursor: pointer; font-weight: bold; border-radius: 4px;">確認新增</button>
         </div>
 

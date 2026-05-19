@@ -355,3 +355,68 @@ body {
     padding: 20px;
     color: #ccc;
 }
+
+/* 1. 編輯器底色與基礎字體 (VS Code 深色背景) */
+pre[class*="language-"],
+code[class*="language-"] {
+    background-color: #1E1E1E !important; 
+    color: #D4D4D4; 
+    font-family: 'Consolas', 'Courier New', monospace;
+    text-shadow: none !important; 
+}
+
+/* 2. 標籤 (Tag)、class/id 屬性名稱：淺藍色 */
+.token.tag,
+.token.attr-name {
+    color: #9CDCFE !important;
+}
+
+/* 3. 雙引號及裡面的內容 (包含 HTML 屬性值)：橘色 */
+.token.string,
+.token.attr-value {
+    color: #CE9178 !important;
+}
+
+/* 4. 註解：淺綠色 */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #6A9955 !important;
+    font-style: italic; 
+}
+
+/* 5. 引入的模組、類別、內建函式 (import)：青色 (藍綠色) */
+.token.class-name,
+.token.builtin,
+.token.namespace,
+.token.symbol {
+    color: #4EC9B0 !important;
+}
+
+/* 6. 條件式 (if...else) 等控制流程：粉紫色 */
+.token.control-flow,
+.token.keyword.control-flow {
+    color: #C586C0 !important;
+}
+
+/* 7. def, const, f-string 等一般關鍵字：深藍色 */
+.token.keyword {
+    color: #569CD6 !important;
+}
+
+/* 8. 自訂函式：黃色 */
+.token.function {
+    color: #DCDCAA !important;
+}
+
+/* 9. 括號與標點符號：黃色 */
+.token.punctuation {
+    color: #FFD700 !important; 
+}
+
+/* 其他：數字與布林值 */
+.token.number,
+.token.boolean {
+    color: #B5CEA8 !important;
+}
