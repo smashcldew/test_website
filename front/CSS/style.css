@@ -420,3 +420,12 @@ code[class*="language-"] {
 .token.boolean {
     color: #B5CEA8 !important;
 }
+
+/* 強制修正高亮外掛在暗白背景下的符號顯示問題 */
+pre code .token.operator,
+pre code .token.punctuation,
+pre code .token.arrow,
+pre code span {
+    background: transparent !important; /* 強制將所有符號與區塊的背景色改為透明 */
+    background-color: transparent !important;
+}
