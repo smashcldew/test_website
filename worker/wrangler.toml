@@ -1,0 +1,18 @@
+name = "blog-api"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# 用 `npx wrangler d1 create blog_backend` 建立後，把輸出的 database_id 貼到這裡
+[[d1_databases]]
+binding = "DB"
+database_name = "blog_backend"
+database_id = "80bf4863-f1b1-4af1-9ef5-d290c30525b4"
+
+# 圖片改用 ImgBB（R2 需要綁定付款資訊）。API Key 以 secret 管理：
+#   npx wrangler secret put IMGBB_API_KEY
+# 日後若要改用 R2，在這裡加上 [[r2_buckets]] binding 即可
+
+[vars]
+# 前端網域，用來限制 CORS。Pages 建立後把下一行取消註解並填入網址，再重新 deploy。
+# 註解狀態下程式碼會退回 "*"（允許所有來源），方便本機測試。
+# ALLOWED_ORIGIN = "https://your-project.pages.dev"

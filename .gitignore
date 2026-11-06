@@ -4,3 +4,12 @@ back/.env
 # 忽略 Python 自動產生的編譯暫存檔
 back/__pycache__/
 *.pyc
+
+# Cloudflare Worker 本地產物與機密
+worker/node_modules/
+worker/.wrangler/
+worker/.dev.vars
+.dev.vars
+
+# 資料搬移用的一次性產生物
+worker/scripts/migrate.sql

@@ -1,18 +1,61 @@
 # 作品集系統
 
-本專案是一個整合多項雲端微服務的高可用性作品集網站。
+本專案是一個以 Cloudflare 全端部署的個人作品集與後台管理網站。
 
 ## 系統架構
-本系統採用前後端分離架構，實現了 100% 的雲端資料持久化：
-- **Frontend**: 部署於 **GitHub Pages**。
-- **Backend**: 部署於 **Render**，採用 **FastAPI** 構建 RESTful API。
-- **Database**: 使用 **MongoDB Atlas**，確保作品資料永不遺失。
-- **Image Hosting**: 整合 **ImgBB API**，實現自動化雲端圖床管理。
+- **Frontend**: 靜態網頁 `front/`，部署於 **Cloudflare Pages**。
+- **Backend**: 使用 **Cloudflare Workers** 撰寫 RESTful API（`worker/src/index.js`），取代原本 Render 上的 FastAPI。
+- **Database**: 使用 **Cloudflare D1**（SQLite），表結構見 `worker/schema.sql`。
+- **Image Hosting**: 沿用 **ImgBB API**（Cloudflare R2 需綁定付款資訊，故未採用）。
 
-## 技術棧
-- **語言**: Python, JavaScript
-- **框架**: FastAPI, Pydantic
-- **維運**: GitHub Actions部署前端網頁, Cron-job持續發出GET請求讓Render伺服器不會shutdown, 環境變數加密.env使重要的帳密不會洩漏
+## API 端點
+| Method | Path | 說明 | 需要登入 |
+| --- | --- | --- | --- |
+| GET | `/api/projects` | 取得所有作品 | 否 |
+| POST | `/api/login` | 管理員登入，回傳 token | 否 |
+| POST | `/api/projects` | 新增作品 | 是 |
+| DELETE | `/api/projects/:id` | 刪除作品 | 是 |
+| POST | `/api/upload` | 上傳圖片到 ImgBB | 是 |
+
+## 部署步驟
+
+### 1. 建立 D1 資料庫並套用表結構
+```bash
+cd worker
+npm install
+npx wrangler d1 create blog_backend        # 把輸出的 database_id 填入 wrangler.toml
+npx wrangler d1 execute blog_backend --remote --file=schema.sql
+```
+
+### 2. 設定機密變數（不會寫入程式碼）
+```bash
+npx wrangler secret put ADMIN_USER
+npx wrangler secret put ADMIN_PASSWORD
+npx wrangler secret put SECRET_TOKEN
+npx wrangler secret put IMGBB_API_KEY
+```
+
+### 3. 部署 Worker
+```bash
+npx wrangler deploy
+```
+把輸出的 `*.workers.dev` 網址填入 `front/JS/config.js` 的 `API_BASE`，並把 Pages 網域填入 `wrangler.toml` 的 `ALLOWED_ORIGIN`。
+
+### 4. 部署前端
+到 Cloudflare Dashboard 建立 Pages 專案並連接此 GitHub repo：
+- Framework preset：None
+- Build command：（留空）
+- Build output directory：`front`
+
+## 從舊的 MongoDB 搬移資料
+```bash
+cd worker/scripts
+export MONGO_URI="mongodb+srv://..."
+python mongo_to_d1.py > migrate.sql
+cd ..
+npx wrangler d1 execute blog_backend --remote --file=migrate.sql
+```
+確認資料無誤後，即可停用 Render 服務與 cron-job 的保持喚醒排程，並至 MongoDB Atlas 關閉叢集。
 
 ## 安全部分
-本專案已落實資安防護，所有機密金鑰（MongoDB 憑證、ImgBB API Key）均透過伺服器環境變數管理，未在原始碼中洩露。
+所有機密（管理員帳密、登入 token、ImgBB API Key）都以 Wrangler secrets 管理，未寫入原始碼。

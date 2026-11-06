@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contentArea = document.getElementById('project-content');
 
     // 註解：向上一層的 back/data.json 請求資料
-    fetch('https://test-website-f5nx.onrender.com/api/projects')
+    fetch(API_BASE + "/api/projects")
         .then(response => {
             if (!response.ok) throw new Error('資料讀取失敗');
             return response.json(); 
