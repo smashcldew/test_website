@@ -2,6 +2,11 @@
 
 本專案是一個以 Cloudflare 全端部署的個人作品集與後台管理網站。
 
+| 項目 | 位置 |
+| --- | --- |
+| 前端網站 | <https://test-website-386.pages.dev> |
+| 後端 API | <https://blog-api.cldew20070210.workers.dev> |
+
 ## 系統架構
 - **Frontend**: 靜態網頁 `front/`，部署於 **Cloudflare Pages**。
 - **Backend**: 使用 **Cloudflare Workers** 撰寫 RESTful API（`worker/src/index.js`），取代原本 Render 上的 FastAPI。
@@ -59,3 +64,37 @@ npx wrangler d1 execute blog_backend --remote --file=migrate.sql
 
 ## 安全部分
 所有機密（管理員帳密、登入 token、ImgBB API Key）都以 Wrangler secrets 管理，未寫入原始碼。
+
+## 版本歷史
+
+### v2.0 — Cloudflare 全端架構（2026-11）
+
+將原本分散於三個服務商的架構整合至 Cloudflare。後端由 Python 改寫為 JavaScript，資料庫由文件型改為關聯型。
+
+| 層級 | v1.0 | v2.0 |
+| --- | --- | --- |
+| 前端 | GitHub Pages | Cloudflare Pages |
+| 後端 | Render（Python / FastAPI） | Cloudflare Workers（JavaScript） |
+| 資料庫 | MongoDB Atlas | Cloudflare D1（SQLite） |
+| 圖片儲存 | ImgBB API | ImgBB API（沿用） |
+| 保持喚醒 | cron-job 定時發送 GET | 不需要 |
+
+主要變更：
+
+- Render 免費方案閒置後會休眠，首次請求需數十秒冷啟動，原先以 cron-job 定時發送 GET 維持喚醒。Workers 無休眠機制，此繞道做法已移除。
+- Workers 執行於 V8 isolate，無法使用 pymongo 驅動，因此資料庫一併改為 D1，並撰寫 `worker/scripts/mongo_to_d1.py` 搬移既有資料。
+- 刪除作品原先以陣列索引定位，多人同時操作時會刪錯資料；改用 D1 後以主鍵 `id` 定位，前端同步調整。
+- 機密由 `.env` + `python-dotenv` 改為 Wrangler secrets，值儲存於 Cloudflare 端。
+- 原計畫以 Cloudflare R2 取代 ImgBB，因 R2 需綁定付款資訊而維持原方案，僅將 API Key 改為 secret 管理。
+
+### v1.0 — 多雲微服務架構（2026-03 ~ 2026-04）
+
+初版的前後端分離架構，實現雲端資料持久化。
+
+- **Frontend**: 部署於 GitHub Pages，以 GitHub Actions 自動部署。
+- **Backend**: 部署於 Render，採用 FastAPI 構建 RESTful API。
+- **Database**: 使用 MongoDB Atlas。
+- **Image Hosting**: 整合 ImgBB API，實現自動化雲端圖床管理。
+- **維運**: 以 cron-job 持續發出 GET 請求，避免 Render 伺服器休眠；機密以 `.env` 管理。
+
+v1.0 的程式碼保存於 git 歷史中，最後狀態見 commit `8fb5db2`。
